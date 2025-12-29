@@ -1,5 +1,5 @@
 import { coursesTable } from '@/config/schema';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth,currentUser } from '@clerk/nextjs/server';
 import { db } from '@/config/db';
 import {
   GoogleGenAI,
@@ -34,6 +34,10 @@ Schema:{
 export async function POST(req) {
     const {courseId ,...formData}=await req.json();
     const user = await currentUser();
+
+    const {has} =await auth()
+    const hasPremiumAccess =has({plan: 'starter'})
+
   const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
   });
@@ -56,6 +60,16 @@ export async function POST(req) {
       ],
     },
   ];
+  //if user already created any course?
+
+  if(!hasPremiumAccess){
+    const result=await db.select().from(coursesTable)
+    .where(eq(coursesTable.userEmail,user?.primaryEmailAddress.emailAddress));
+
+    if(result?.length>=1){
+      return NextResponse.json({'resp': 'limit exceed'})
+    }
+  }
 
   const response = await ai.models.generateContent({
     model,
