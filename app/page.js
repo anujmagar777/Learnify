@@ -67,7 +67,7 @@ export default function Home() {
                 fill
                 className="object-cover opacity-90 group-hover:opacity-100 transition-opacity"
               />
-              {/* 98% Completion Badge Removed */}
+              
             </div>
           </div>
         </div>
