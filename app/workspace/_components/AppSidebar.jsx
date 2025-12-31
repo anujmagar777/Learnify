@@ -52,6 +52,14 @@ function AppSidebar() {
 
   const path = usePathname();
 
+  const isActive = (itemPath) => {
+    if (!path) return false;
+    // Dashboard should only be active on the exact route.
+    if (itemPath === "/workspace") return path === "/workspace";
+    // Other pages can be active on nested routes.
+    return path === itemPath || path.startsWith(itemPath + "/");
+  };
+
   return (
     <Sidebar>
       <SidebarHeader className={'p-4'} >
@@ -69,7 +77,7 @@ function AppSidebar() {
             <SidebarMenu>
               {SidebarOptions.map((items,index)=>(<SidebarMenuItem key={index}>
                 <SidebarMenuButton asChild className={'p-5'}> 
-                  <Link href={items.path} className={`text=[17x] ${path.includes(items.path) && 'text-primary bg-blue-50'}`}>
+                  <Link href={items.path} className={`text-[17px] ${isActive(items.path) ? 'text-primary bg-blue-50' : ''}`}>
                   <items.icon className='h-7 w-7'/>
                   <span>{items.title}</span>
                   </Link>
