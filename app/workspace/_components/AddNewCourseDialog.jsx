@@ -6,6 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -31,6 +32,7 @@ function AddNewCourseDialog({ children }) {
 
     const [open, setOpen] = useState(false);
     const [loading,setLoading] = useState(false);
+    const [availableCourseDialog, setAvailableCourseDialog] = useState(null);
     const [formData,setFormData]=useState({
         name:'',
         description:'',
@@ -118,22 +120,16 @@ const onGenerate = async ()=>{
 
     }catch(e){
         const status = e?.response?.status;
-        const dupCid = e?.response?.data?.duplicateCid;
-        if (status === 409 && dupCid) {
-            setLoading(false);
-            toast.message('This course already exists!', {
-                description: 'Redirecting to existing course',
-                action: {
-                    label: 'View',
-                    onClick: () => router.push('/course/' + dupCid),
-                },
-                duration: 5000,
+        const availableCourseId = e?.response?.data?.availableCourseId;
+        const courseName = e?.response?.data?.courseName;
+        
+        if (status === 409 && availableCourseId) {
+            setAvailableCourseDialog({
+                courseId: availableCourseId,
+                courseName: courseName,
             });
             setOpen(false);
-            // Redirect to the existing course in explore section
-            setTimeout(() => {
-                router.push('/course/' + dupCid);
-            }, 1000);
+            setLoading(false);
             return;
         }
         toast.error('Failed to create course. Please try again.');
@@ -143,6 +139,7 @@ const onGenerate = async ()=>{
     }
 
     return (
+        <>
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent>
@@ -221,6 +218,41 @@ const onGenerate = async ()=>{
                 </DialogHeader>
             </DialogContent>
         </Dialog>
+
+        {/* Dialog for already available course */}
+        <Dialog open={!!availableCourseDialog} onOpenChange={(open) => !open && setAvailableCourseDialog(null)}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className='flex items-center gap-2'>
+                        <span>✅ Already Available</span>
+                    </DialogTitle>
+                    <DialogDescription>
+                        This course "{availableCourseDialog?.courseName}" is already available in the system.
+                    </DialogDescription>
+                </DialogHeader>
+                <p className='text-sm text-muted-foreground'>
+                    You can view and enroll in this verified course from the Explore Courses section. Would you like to view it now?
+                </p>
+                <DialogFooter>
+                    <Button 
+                        variant='outline' 
+                        onClick={() => setAvailableCourseDialog(null)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={() => {
+                            const courseId = availableCourseDialog?.courseId;
+                            setAvailableCourseDialog(null);
+                            router.push(`/workspace/explore?courseId=${courseId}`);
+                        }}
+                    >
+                        View Course
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        </>
     )
 }
 

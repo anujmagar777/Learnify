@@ -33,6 +33,7 @@ function EditCourse({viewCourse=false}) {
         // If backend cloned a copy for this user, move to the new id
         if (data?.cid && data.cid !== courseId && data?.duplicatedFrom) {
             router.replace('/workspace/edit-course/' + data.cid);
+            return;
         }
 
         setCourse(data);
@@ -44,6 +45,7 @@ function EditCourse({viewCourse=false}) {
         setLoading(false);
         }
     }
+
   return (
     <div>
       {error && <div className='p-4 mb-4 border rounded-md bg-secondary text-sm'>{error}</div>}

@@ -45,27 +45,29 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Prevent duplicate generation when a course with same name & category already exists in explore
+    // Check for duplicate VERIFIED course with same name & category
     const courseName = (formData?.name || '').trim();
     const courseCategory = (formData?.category || '').trim();
     if (courseName && courseCategory) {
-      const duplicates = await db
+      const verifiedDuplicates = await db
         .select()
         .from(coursesTable)
         .where(
           and(
             ilike(coursesTable.name, courseName),
             ilike(coursesTable.category, courseCategory),
+            eq(coursesTable.reviewStatus, 'verified'),
             sql`${coursesTable.courseContent}::jsonb != '{}'::jsonb`
           )
         )
         .limit(1);
 
-      if (duplicates?.[0]) {
+      if (verifiedDuplicates?.[0]) {
         return NextResponse.json(
           {
-            error: 'Already have the same course',
-            duplicateCid: duplicates[0].cid,
+            error: 'This course is already available',
+            availableCourseId: verifiedDuplicates[0].cid,
+            courseName: verifiedDuplicates[0].name,
           },
           { status: 409 }
         );

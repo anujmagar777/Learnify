@@ -6,9 +6,12 @@ import { Loader2, Search } from 'lucide-react'
 import React, { useState , useEffect } from 'react'
 import CourseCard from '../_components/CourseCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useSearchParams } from 'next/navigation';
 
 
 function Explore() {
+    const searchParams = useSearchParams();
+    const highlightCourseId = searchParams.get('courseId');
     const [courseList, setCourseList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -55,7 +58,12 @@ function Explore() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5'>
                 {courseList.length > 0 ? courseList?.map((course, index) => (
-                    <CourseCard course={course} key={index} />
+                    <div 
+                        key={index}
+                        className={highlightCourseId === course.cid ? 'ring-2 ring-blue-500 rounded-lg' : ''}
+                    >
+                        <CourseCard course={course} />
+                    </div>
                 )) :
                     [0, 1, 2, 3].map((item, index) => (
                         <Skeleton key={index} className={'w-full h-60'} />

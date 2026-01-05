@@ -84,7 +84,7 @@ export default function Home() {
           <FeatureCard icon={<ChartLine className="text-purple-600" />} bgColor="bg-purple-50" title="Personalized Paths" desc="Customized learning paths that adapt in real-time based on your personal progress." />
           <FeatureCard icon={<CheckCircle className="text-purple-600" />} bgColor="bg-purple-50" title="Progress Tracking" desc="Real-time analytics and detailed progress reports to monitor every improvement." />
           <FeatureCard icon={<Utensils className="text-purple-600" />} bgColor="bg-purple-50" title="Interactive Content" desc="Engage with interactive quizzes and projects that make learning truly enjoyable." />
-          <FeatureCard icon={<DollarSign className="text-purple-600" />} bgColor="bg-purple-50" title="Affordable Pricing" desc="Flexible subscription plans that fit your budget. Start free and upgrade whenever." />
+
         </div>
       </section>
 

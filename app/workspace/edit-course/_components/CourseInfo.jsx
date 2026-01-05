@@ -16,6 +16,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 function CourseInfo({ course, viewCourse, refreshCourse }) {
     const [isMounted, setIsMounted] = useState(false);
@@ -26,6 +34,7 @@ function CourseInfo({ course, viewCourse, refreshCourse }) {
     const [professorList, setProfessorList] = useState([]);
     const [professorListError, setProfessorListError] = useState(null);
     const [enrolling, setEnrolling] = useState(false);
+    const [availableCourseDialog, setAvailableCourseDialog] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -297,15 +306,15 @@ const GenerateCourseContent = async () => {
         setVerificationNoticeVisible(false);
     } catch (e) {
         const status = e?.response?.status;
-        const dupCid = e?.response?.data?.duplicateCid;
-        if (status === 409 && dupCid) {
-            toast.message('This course already exists!', {
-                description: 'Click to view the existing course',
-                action: {
-                    label: 'View Course',
-                    onClick: () => router.push('/course/' + dupCid),
-                },
+        const availableCourseId = e?.response?.data?.availableCourseId;
+        const courseName = e?.response?.data?.courseName;
+        
+        if (status === 409 && availableCourseId) {
+            setAvailableCourseDialog({
+                courseId: availableCourseId,
+                courseName: courseName,
             });
+            setLoading(false);
             return;
         }
         console.error('Error generating content:', e);
@@ -547,6 +556,40 @@ const GenerateCourseContent = async () => {
                     <span className='text-gray-400'>No banner image</span>
                 </div>
             )}
+
+            {/* Dialog for already available course */}
+            <Dialog open={!!availableCourseDialog} onOpenChange={(open) => !open && setAvailableCourseDialog(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className='flex items-center gap-2'>
+                            <span>✅ Already Available</span>
+                        </DialogTitle>
+                        <DialogDescription>
+                            This course "{availableCourseDialog?.courseName}" is already available in the system.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <p className='text-sm text-muted-foreground'>
+                        You can view and enroll in this verified course from the Explore Courses section. Would you like to view it now?
+                    </p>
+                    <DialogFooter>
+                        <Button 
+                            variant='outline' 
+                            onClick={() => setAvailableCourseDialog(null)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={() => {
+                                const courseId = availableCourseDialog?.courseId;
+                                setAvailableCourseDialog(null);
+                                router.push(`/workspace/explore?courseId=${courseId}`);
+                            }}
+                        >
+                            View Course
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
