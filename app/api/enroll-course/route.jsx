@@ -1,5 +1,5 @@
-import { coursesTable, enrollCourseTable } from "@/config/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { coursesTable, enrollCourseTable, professorsTable } from "@/config/schema";
+import { eq, and, desc, leftJoin } from "drizzle-orm";
 import { db } from "@/config/db";
 import { NextResponse } from "next/server";
 import { getUserEmailFromRequestAsync } from "@/lib/authServer";
@@ -58,6 +58,7 @@ export async function GET(req) {
       .select()
       .from(coursesTable)
       .innerJoin(enrollCourseTable, eq(coursesTable.cid, enrollCourseTable.cid))
+      .leftJoin(professorsTable, eq(coursesTable.reviewProfessorEmail, professorsTable.email))
       .where(
         and(
           eq(enrollCourseTable.userEmail, userEmail),
@@ -72,6 +73,7 @@ export async function GET(req) {
     }
 
     const course = row?.courses;
+    const professor = row?.professors;
     const reviewStatus = course?.reviewStatus ?? "draft";
 
     if (reviewStatus !== "verified") {
@@ -95,7 +97,16 @@ export async function GET(req) {
     }
 
     return NextResponse.json({
-      courses: { ...course, courseContent: parsedCourseContent },
+      courses: { 
+        ...course, 
+        courseContent: parsedCourseContent,
+        verifiedBy: professor ? {
+          email: professor.email,
+          name: professor.name,
+          specializations: professor.specializations,
+          bio: professor.bio
+        } : null
+      },
       enrollCourse: row?.enrollCourse
     });
   }
@@ -104,10 +115,24 @@ export async function GET(req) {
     .select()
     .from(coursesTable)
     .innerJoin(enrollCourseTable, eq(coursesTable.cid, enrollCourseTable.cid))
+    .leftJoin(professorsTable, eq(coursesTable.reviewProfessorEmail, professorsTable.email))
     .where(eq(enrollCourseTable.userEmail, userEmail))
     .orderBy(desc(enrollCourseTable.id));
 
-  return NextResponse.json(result);
+  const transformedResult = result.map(item => ({
+    courses: {
+      ...item.courses,
+      verifiedBy: item.professors ? {
+        email: item.professors.email,
+        name: item.professors.name,
+        specializations: item.professors.specializations,
+        bio: item.professors.bio
+      } : null
+    },
+    enrollCourse: item.enrollCourse
+  }));
+
+  return NextResponse.json(transformedResult);
 }
 
 export  async function PUT(req) {

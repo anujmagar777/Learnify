@@ -46,6 +46,7 @@ export const professorsTable = pgTable('professors', {
   email: varchar({ length: 255 }).notNull().unique(),
   name: varchar({ length: 255 }),
   specializations: varchar({ length: 500 }), // Comma-separated course names/categories
+  bio: varchar({ length: 1000 }), // Professor biography
   createdAt: timestamp('createdAt', { withTimezone: true }).defaultNow().notNull(),
 });
 

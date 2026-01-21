@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { db } from "@/config/db";
-import { coursesTable } from "@/config/schema";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { coursesTable, professorsTable } from "@/config/schema";
+import { and, desc, eq, sql, leftJoin } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getUserEmailFromRequestAsync } from "@/lib/authServer";
 
@@ -14,8 +14,12 @@ export async function GET(req) {
         //  EXPLORE PAGE: show only verified courses from ALL users
         if (courseId === "0") {
             const result = await db
-                .select()
+                .select({
+                    course: coursesTable,
+                    professor: professorsTable,
+                })
                 .from(coursesTable)
+                .leftJoin(professorsTable, eq(coursesTable.reviewProfessorEmail, professorsTable.email))
                 .where(
                     and(
                         sql`${coursesTable.courseContent}::jsonb != '{}'::jsonb`,
@@ -24,7 +28,18 @@ export async function GET(req) {
                 )
                 .orderBy(desc(coursesTable.id));
 
-            return NextResponse.json(result || []);
+            // Transform the result to flatten the structure
+            const transformedResult = result.map(item => ({
+                ...item.course,
+                verifiedBy: item.professor ? {
+                    email: item.professor.email,
+                    name: item.professor.name,
+                    specializations: item.professor.specializations,
+                    bio: item.professor.bio
+                } : null
+            }));
+
+            return NextResponse.json(transformedResult || []);
         }
 
         // Protected routes
@@ -95,8 +110,12 @@ export async function GET(req) {
 
         //  User's own courses
         const result = await db
-            .select()
+            .select({
+                course: coursesTable,
+                professor: professorsTable,
+            })
             .from(coursesTable)
+            .leftJoin(professorsTable, eq(coursesTable.reviewProfessorEmail, professorsTable.email))
             .where(
                 eq(
                     coursesTable.userEmail,
@@ -105,7 +124,18 @@ export async function GET(req) {
             )
             .orderBy(desc(coursesTable.id));
 
-        return NextResponse.json(result || []);
+        // Transform the result to flatten the structure
+        const transformedResult = result.map(item => ({
+            ...item.course,
+            verifiedBy: item.professor ? {
+                email: item.professor.email,
+                name: item.professor.name,
+                specializations: item.professor.specializations,
+                bio: item.professor.bio
+            } : null
+        }));
+
+        return NextResponse.json(transformedResult || []);
 
     } catch (error) {
         console.error("Error in courses API:", error);

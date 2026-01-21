@@ -8,11 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { CheckCircle2 } from "lucide-react";
 
 function ChapterListSidebar({ courseInfo }) {
   const course = courseInfo?.courses;
   const enrollCourse =courseInfo?.enrollCourse;
   const courseContent = courseInfo?.courses?.courseContent;
+  const verifiedBy = courseInfo?.courses?.verifiedBy;
+  const reviewedDate = course?.reviewReviewedAt ? new Date(course.reviewReviewedAt) : null;
   const { selectedChapterIndex, setSelectedChapterIndex } = useContext(SelectedChapterIndexContext)
   let completedChapter= enrollCourse?.completedChapters ?? [];
 
@@ -22,6 +25,20 @@ function ChapterListSidebar({ courseInfo }) {
     : (typeof courseContent === 'string' 
       ? (() => { try { return JSON.parse(courseContent); } catch { return []; } })() 
       : []);
+
+  const parseSpecializations = (spec) => {
+    if (!spec) return [];
+    if (Array.isArray(spec)) return spec;
+    if (typeof spec === 'string') {
+      return spec.split(',').map(s => s.trim()).filter(s => s);
+    }
+    return [];
+  };
+
+  const formatDate = (date) => {
+    if (!date) return '';
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
 
   if (!parsedCourseContent || parsedCourseContent.length === 0) {
     return (
