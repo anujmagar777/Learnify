@@ -224,7 +224,7 @@ const onGenerate = async ()=>{
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle className='flex items-center gap-2'>
-                        <span>✅ Already Available</span>
+                        <span>This course is already available</span>
                     </DialogTitle>
                     <DialogDescription>
                         This course "{availableCourseDialog?.courseName}" is already available in the system.
