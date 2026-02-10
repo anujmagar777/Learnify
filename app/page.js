@@ -77,10 +77,9 @@ export default function Home() {
           <p className="text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">Experience the future of online learning with our AI-powered platform designed for your unique success path.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <FeatureCard icon={<Bolt className="text-purple-600" />} bgColor="bg-purple-50" title="Create your own Courses" desc="Build custom courses in minutes with guided prompts and AI suggestions." />
           <FeatureCard icon={<ChartLine className="text-purple-600" />} bgColor="bg-purple-50" title="Personalized Paths" desc="Customized learning paths that adapt in real-time based on your personal progress." />
           <FeatureCard icon={<CheckCircle className="text-purple-600" />} bgColor="bg-purple-50" title="Progress Tracking" desc="Real-time analytics and detailed progress reports to monitor every improvement." />
-          <FeatureCard icon={<Utensils className="text-purple-600" />} bgColor="bg-purple-50" title="Interactive Content" desc="Engage with interactive quizzes and projects that make learning truly enjoyable." />
-
         </div>
       </section>
 
@@ -110,51 +109,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- FOOTER --- */}
-      <footer className="pt-32 bg-slate-950 text-white px-6 md:px-12">
-        <div className="max-w-5xl mx-auto text-center pb-24 border-b border-white/10">
-          <h2 className="text-5xl md:text-6xl font-extrabold mb-8 flex items-center justify-center gap-5 leading-tight text-white">
-            Ready to Start Your <br /> Learning Journey? <Rocket className="text-purple-400" size={50} />
-          </h2>
-          <div className="flex justify-center">
-            <Button asChild size="lg" className="bg-white text-black hover:bg-slate-100 px-16 py-8 text-xl font-bold rounded-2xl shadow-2xl transition-all transform hover:scale-105 active:scale-95">
-              <Link href="/sign-up">Sign Up</Link>
-            </Button>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto py-20 grid grid-cols-1 md:grid-cols-4 gap-16">
-          <div className="space-y-6">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white"><BookOpen size={18} /></div>
-              <span className="text-xl font-bold">Learnify</span>
-            </div>
-            <p className="text-slate-500 text-sm">The world's most advanced AI-powered learning ecosystem.</p>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-8">Platform</h4>
-            <ul className="space-y-4 text-slate-400 text-sm">
-              <li><a href="#features" className="hover:text-purple-400 transition">Features</a></li>
-              <li><a href="#how-it-works" className="hover:text-purple-400 transition">How It Works</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-8">Company</h4>
-            <ul className="space-y-4 text-slate-400 text-sm">
-              <li><a href="#" className="hover:text-purple-400 transition">About Us</a></li>
-              <li><a href="#" className="hover:text-purple-400 transition">Privacy</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold text-white mb-8">Social</h4>
-            <div className="flex gap-6">
-              <Facebook className="text-slate-400 hover:text-purple-400 cursor-pointer transition" size={20} />
-              <Twitter className="text-slate-400 hover:text-purple-400 cursor-pointer transition" size={20} />
-              <Instagram className="text-slate-400 hover:text-purple-400 cursor-pointer transition" size={20} />
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
