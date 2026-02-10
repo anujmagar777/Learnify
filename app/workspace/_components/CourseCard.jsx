@@ -73,6 +73,7 @@ function CourseCard({ course }) {
   };
 
   const progressPercent = getProgressPercent();
+  const isEnrolled = Boolean(course?.enrollCourse);
   const isComplete = progressPercent !== null && progressPercent >= 100;
 
   return (
@@ -121,6 +122,21 @@ function CourseCard({ course }) {
 
 
 
+          {isEnrolled && progressPercent !== null && (
+            <div className='space-y-1'>
+              <div className='flex items-center justify-between text-sm text-muted-foreground'>
+                <span>Progress</span>
+                <span className='text-primary font-medium'>{progressPercent}%</span>
+              </div>
+              <div className='h-2 w-full rounded-full bg-secondary'>
+                <div
+                  className='h-full rounded-full bg-primary transition-all'
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           <div className='flex items-center justify-between gap-3 pt-1'>
             <h2 className='flex items-center text-sm gap-2 text-muted-foreground'>
               <Book className='text-primary h-5 w-5' />
@@ -130,7 +146,7 @@ function CourseCard({ course }) {
               <Button
                 size={'sm'}
                 className={isComplete ? 'shrink-0 gap-2 bg-green-600 hover:bg-green-700 text-white' : 'shrink-0 gap-2'}
-                onClick={enrollAndContinue}
+                onClick={isEnrolled ? () => router.push('/course/' + course.cid) : enrollAndContinue}
                 disabled={enrolling}
               >
                 {enrolling ? (
@@ -140,7 +156,7 @@ function CourseCard({ course }) {
                 ) : (
                   <PlayCircle className='h-4 w-4' />
                 )}
-                {isComplete ? 'Review Course' : 'Enroll & Continue'}
+                {isComplete ? 'Review Course' : isEnrolled ? 'Continue' : 'Enroll & Continue'}
               </Button>
             ) : (
               <Link href={'/workspace/edit-course/' + course?.cid}>
