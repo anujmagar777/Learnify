@@ -6,12 +6,11 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
-const allowedEmailDomains = new Set([
-  "gmail.com",
-  "yahoo.com",
-  "outlook.com",
-  "hotmail.com",
-]);
+const VALID_EMAIL_DOMAINS = [
+  'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 
+  'icloud.com', 'protonmail.com', 'aol.com', 'mail.com',
+  'zoho.com', 'yandex.com', 'gmx.com', 'proton.me'
+];
 
 function getEmailError(value) {
   if (typeof value !== "string") return "Email is required";
@@ -46,18 +45,10 @@ function getEmailError(value) {
   const tld = labels[labels.length - 1];
   if (!/^[A-Za-z]{2,24}$/.test(tld)) return "Email TLD is invalid";
 
-  if (!allowedEmailDomains.has(domain)) {
-    return "Email domain must be gmail.com, yahoo.com, outlook.com, or hotmail.com";
+  // Check if domain is in the allowed list
+  if (!VALID_EMAIL_DOMAINS.includes(domain)) {
+    return `Please use a valid email provider (e.g., ${VALID_EMAIL_DOMAINS.slice(0, 3).join(', ')})`;
   }
-
-  return null;
-}
-
-function getPasswordError(value) {
-  if (typeof value !== "string") return "Password is required";
-  if (!value) return "Password is required";
-  const nonSpaceCount = value.replace(/\s/g, "").length;
-  if (nonSpaceCount < 8) return "Password must be at least 8 characters (spaces don't count)";
   return null;
 }
 
@@ -73,7 +64,13 @@ export default function SignUpPage() {
   const [error, setError] = useState(null);
 
   const emailError = useMemo(() => getEmailError(email), [email]);
-  const passwordError = useMemo(() => getPasswordError(password), [password]);
+  const passwordError = useMemo(() => {
+    if (!password) return "Password is required";
+    const passwordWithoutSpaces = password.replace(/\s/g, '');
+    if (password !== passwordWithoutSpaces) return "Password cannot contain spaces";
+    if (passwordWithoutSpaces.length < 8) return "Password must be at least 8 characters";
+    return null;
+  }, [password]);
   const confirmPasswordError = useMemo(() => {
     if (!confirmPassword) return "Confirm your password";
     if (confirmPassword !== password) return "Passwords do not match";
