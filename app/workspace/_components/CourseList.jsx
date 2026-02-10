@@ -78,20 +78,20 @@ function CourseList() {
         );
     }
   return (
-    <div className='mt-10'>
-      <h2 className='font-bold text-2xl'>Course List</h2>
-                        {courseList?.length === 0 ? 
-            <div className='flex p-7 items-center justify-center flex-col border rounded-2xl mt-2 bg-secondary'>
-        <h2 className='my-2 text-xl font-bold'>Look like you haven't created any courses yet</h2>
-        <AddNewCourseDialog>
-        <Button>+ Create your first course</Button>
-        </AddNewCourseDialog>
-        </div>:
+        <div className='mt-10'>
+            <h2 className='font-bold text-2xl'>Your Created Courses</h2>
+            {courseList?.length === 0 ? 
+                <div className='flex p-7 items-center justify-center flex-col border rounded-2xl mt-2 bg-secondary'>
+                    <h2 className='my-2 text-xl font-bold'>You haven't created any courses yet</h2>
+                    <AddNewCourseDialog>
+                        <Button>Create your course</Button>
+                    </AddNewCourseDialog>
+                </div>:
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5'>
-                                                {courseList?.map((course,index)=>(
-              <CourseCard course={course} key={index}/>
-            ))}
-            </div>}
+                    {courseList?.map((course,index)=>(
+                        <CourseCard course={course} key={index}/>
+                    ))}
+                </div>}
     </div>
   )
 }

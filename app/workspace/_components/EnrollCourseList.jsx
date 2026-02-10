@@ -47,11 +47,10 @@ function EnrollCourseList() {
       <div className='mt-3'>
         <h2 className='font-bold text-2xl'>Continue learning your course</h2>
         <div className='mt-4 border border-border rounded-2xl p-6 bg-secondary'>
-          <p className='text-muted-foreground'>You haven't enrolled in any courses yet.</p>
-          <p className='text-sm text-muted-foreground mt-1'>Enroll now to start learning.</p>
+          <p className='text-muted-foreground'>You haven't enrolled in any courses yet</p>
           <div className='mt-4'>
             <Button asChild>
-              <Link href='/workspace/explore'>Explore Courses</Link>
+              <Link href='/workspace/explore'>Enroll Now</Link>
             </Button>
           </div>
         </div>
