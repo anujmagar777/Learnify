@@ -182,7 +182,7 @@ const onGenerate = async ()=>{
                             <div>
                                 <label>Difficulty Level</label>
                                 <Select onValueChange={(value)=>onHandleInputChange('level',value)}>
-                                    <SelectTrigger className="w-[180px]">
+                                    <SelectTrigger className="w-45">
                                         <SelectValue placeholder="Difficulty Level" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -196,7 +196,7 @@ const onGenerate = async ()=>{
                             <div>
                                 <label>Category</label>
                                 <Select onValueChange={(value)=>onHandleInputChange('category',value)}>
-                                    <SelectTrigger className="w-[280px]">
+                                    <SelectTrigger className="w-70">
                                         <SelectValue placeholder="Category" />
                                     </SelectTrigger>
                                     <SelectContent>
