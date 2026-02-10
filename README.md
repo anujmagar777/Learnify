@@ -4,14 +4,21 @@
 
 Learnify is an AI-powered learning platform for creating, reviewing, and consuming courses. It generates course layouts and content, supports enrollment, and includes a professor verification workflow with feedback.
 
-## Quick Overview
+## What You Can Do
 
-- Create a course: pick domain, level, chapters, and topics
-- Generate content: AI fills each topic with structured learning material
-- Review flow: submit for professor verification
-- Learn: approved courses become available to enrolled learners
+- Build courses fast: generate chapters, topics, and durations from a brief
+- Fill content: AI generates structured learning material per topic
+- Review and approve: professor verification with approve or change requests
+- Learn and track: enrolled learners view courses and progress by chapter
 
-## Key Capabilities
+## Typical User Journey
+
+1. Create a course and generate a layout.
+2. Generate content for each topic.
+3. Submit the course for professor review.
+4. After approval, learners can enroll and study.
+
+## Key Features
 
 - AI-generated course layout (chapters, topics, durations)
 - AI-generated course content with optional video enrichment
@@ -19,7 +26,7 @@ Learnify is an AI-powered learning platform for creating, reviewing, and consumi
 - Enrollment and learner dashboard
 - Professor verification with email review links
 
-## Course Model (What A Course Includes)
+## Course Model (Data Shape)
 
 Each course stores both the layout and the generated content:
 
@@ -54,7 +61,7 @@ The generated layout is stored in `courseJson` and follows a consistent structur
 
 - Learners enroll in a course and track chapter completion
 - Chapters and topics appear in a sidebar with content in the main view
-- If a course is pending review, learning access is restricted until verified
+- Pending courses are locked until the review is approved
 
 ## Verification Workflow
 
@@ -78,7 +85,7 @@ The generated layout is stored in `courseJson` and follows a consistent structur
 - Node.js 18 or newer
 - A Postgres database (Neon or local)
 
-### Install And Run
+### Install and Run
 
 1. Install dependencies:
 	```bash
